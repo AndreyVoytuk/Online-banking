@@ -16,20 +16,21 @@ import org.hibernate.annotations.GenericGenerator;
 public class SavingsTransaction {
 
 	@Id
-	@GeneratedValue(generator="increment")
-	@GenericGenerator(name="increment", strategy = "increment")
+	@GeneratedValue(generator = "increment")
+	@GenericGenerator(name = "increment", strategy = "increment")
 	private Long id;
-    private Date date;
-    private String description;
-    private String type;
-    private String status;
-    private double amount;
-    private BigDecimal availableBalance;
-    @ManyToOne
-    @JoinColumn(name="savings_account_id")
-    private SavingsAccount savingsAccount;
-    
-	public SavingsTransaction() {}
+	private Date date;
+	private String description;
+	private String type;
+	private String status;
+	private double amount;
+	private BigDecimal availableBalance;
+	@ManyToOne
+	@JoinColumn(name = "savings_account_id")
+	private SavingsAccount savingsAccount;
+
+	public SavingsTransaction() {
+	}
 
 	public SavingsTransaction(Date date, String description, String type, String status, double amount,
 			BigDecimal availableBalance, SavingsAccount savingsAccount) {
@@ -106,7 +107,5 @@ public class SavingsTransaction {
 	public void setSavingsAccount(SavingsAccount savingsAccount) {
 		this.savingsAccount = savingsAccount;
 	}
-    
-	
-    
+
 }
