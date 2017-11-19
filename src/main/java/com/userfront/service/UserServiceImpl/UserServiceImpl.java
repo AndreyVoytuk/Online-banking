@@ -25,10 +25,13 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserDao userDao;
+
 	@Autowired
 	private RoleDao roleDao;
+
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
+
 	@Autowired
 	private AccountService accountService;
 
