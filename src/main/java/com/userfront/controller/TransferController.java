@@ -1,6 +1,7 @@
 package com.userfront.controller;
 
 import java.security.Principal;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.userfront.domain.PrimaryAccount;
+import com.userfront.domain.Recipient;
 import com.userfront.domain.SavingsAccount;
 import com.userfront.domain.User;
 import com.userfront.service.TransactionService;
@@ -46,6 +48,25 @@ public class TransferController {
 		transactionService.betweenAccountsTransfer(transferFrom, transferTo, amount, primaryAccount, savingAccount);
 
 		return "redirect:/userFront";
+	}
 
+	@GetMapping("/recipient")
+	public String recipient(Model model, Principal principal) {
+		List<Recipient> recipientList = transactionService.findRecipientList(principal);
+
+		model.addAttribute("recipient", new Recipient());
+		model.addAttribute("recipientList", recipientList);
+
+		return "recipient";
+	}
+
+	@PostMapping("/recipient/save")
+	public String recipient(@ModelAttribute("recipient") Recipient recipient, Principal principal) {
+		User user = userService.findByUsername(principal.getName());
+
+		recipient.setUser(user);
+		transactionService.saveRecipient(recipient);
+
+		return "redirect:/transfer/recipient";
 	}
 }
