@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.userfront.dao.PrimaryAccountDao;
+import com.userfront.dao.PrimaryTransactionDao;
 import com.userfront.dao.SavingsAccountDao;
+import com.userfront.dao.SavingsTransactionDao;
 import com.userfront.domain.PrimaryAccount;
 import com.userfront.domain.PrimaryTransaction;
 import com.userfront.domain.SavingsAccount;
@@ -37,6 +39,9 @@ public class AccountServiceImpl implements AccountService {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	TransactionServiceImpl transactionServiceImpl;
 
 	@Override
 	public PrimaryAccount createPrimaryAccount() {
@@ -73,6 +78,8 @@ public class AccountServiceImpl implements AccountService {
 
 			PrimaryTransaction primaryTransaction = new PrimaryTransaction(new Date(), "Deposit to Primary account",
 					"Account", "Finished", amount, primaryAccount.getAccountBalance(), primaryAccount);
+			transactionServiceImpl.savePrimaryDepositTransaction(primaryTransaction);
+
 		} else if (SAVINGS.equalsIgnoreCase(accountType)) {
 			SavingsAccount savingsAccount = user.getSavingAccount();
 			savingsAccount.setAccountBalance(savingsAccount.getAccountBalance().add(new BigDecimal(amount)));
@@ -80,6 +87,7 @@ public class AccountServiceImpl implements AccountService {
 
 			SavingsTransaction savingsTransaction = new SavingsTransaction(new Date(), "Deposit to Savings account",
 					"Account", "Finished", amount, savingsAccount.getAccountBalance(), savingsAccount);
+			transactionServiceImpl.saveSavingsDepositTransaction(savingsTransaction);
 		}
 
 	}
