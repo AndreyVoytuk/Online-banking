@@ -3,6 +3,8 @@ package com.userfront.controller;
 import java.security.Principal;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.userfront.domain.PrimaryAccount;
 import com.userfront.domain.Recipient;
@@ -61,12 +64,36 @@ public class TransferController {
 	}
 
 	@PostMapping("/recipient/save")
-	public String recipient(@ModelAttribute("recipient") Recipient recipient, Principal principal) {
+	public String recipientPost(@ModelAttribute("recipient") Recipient recipient, Principal principal) {
 		User user = userService.findByUsername(principal.getName());
 
 		recipient.setUser(user);
 		transactionService.saveRecipient(recipient);
 
 		return "redirect:/transfer/recipient";
+	}
+
+	@GetMapping(value="/recipient/edit")
+	public String recipientEdit(@RequestParam(value="recipientName") String recipientName, Model model, Principal principal) {
+		Recipient recipient = transactionService.findRecipientByName(recipientName);
+		List<Recipient> recipientList = transactionService.findRecipientList(principal);
+
+		model.addAttribute("recipient", recipient);
+		model.addAttribute("recipientList", recipientList);
+
+		return "recipient";
+	}
+
+	@GetMapping(value="/recipient/delete")
+	@Transactional
+	public String recipientDelete(@RequestParam(value="recipientName") String recipientName, Model model, Principal principal) {
+		transactionService.deleteRecipientByName(recipientName);
+		List<Recipient> recipientList = transactionService.findRecipientList(principal);
+
+		Recipient recipient = new Recipient();
+		model.addAttribute("recipient", recipient);
+		model.addAttribute("recipientList", recipientList);
+
+		return "recipient";
 	}
 }

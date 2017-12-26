@@ -22,4 +22,6 @@ public interface TransactionService {
 			SavingsAccount savingAccount) throws Exception;
 	List<Recipient> findRecipientList(Principal principal);
 	Recipient saveRecipient(Recipient recipient);
+	Recipient findRecipientByName(String recipientName);
+	void deleteRecipientByName(String recipientName);
 }
